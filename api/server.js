@@ -1,16 +1,19 @@
-'use strict';
+var express = require('express');
+var app = express();
+var mongoose = require('mongoose');
+var databaseUrl = process.env.MONGO_DATABASE || "mongodb://localhost/myapp"
+var Todo = require('./models').Todo;
 
-const express = require('express');
+mongoose.connect(databaseUrl, { useNewUrlParser: true });
 
-// Constants
-const PORT = 8080;
-const HOST = '0.0.0.0';
-
-// App
-const app = express();
-app.get('/', (req, res) => {
-    res.send('Hello world\n');
+app.get('/api/todos', function(req, res) {
+    Todo.find().exec((err, todos) => {
+        if (err) {
+            res.send(err)
+            return
+        }
+        res.json(todos)
+    })
 });
 
-app.listen(PORT, HOST);
-console.log(`Running on http://${HOST}:${PORT}`);
+app.listen(8080);

@@ -4,18 +4,56 @@ services:
   app:
     container_name: node-api
     build: ./api
+    environment:
+      - NODE_ENV=production
+      - MONGO_DATABASE=mongodb://mongodb/myapp
     volumes:
       - ./api:/usr/src/app
     ports:
       - 8080:8080
     tty: true
     links:
-      - mongo
+      - mongodb
 
-  mongo:
-    container_name: mongo
-    image: mongo:3.4
-    volumes:
-      - ./mongo:/data/db
+  mongodb:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
     ports:
       - 27017:27017
+    command:
+      - mongod
+
+  mongo_seed:
+    build: mongo_seed
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+
+#   mongo:
+#     container_name: mongo
+#     restart: always
+#     image: mongo:4.0
+#     volumes:
+#       - ./mongo:/data/db
+#     ports:
+#       - 27017:27017
+#     environment:
+#       MONGODB_USER: user
+#       MONGODB_PASS: pass
+#     command:
+#       - mongod
+
+# version: "3"
+# services:
+#   mongodb:
+#     image: mongo:latest
+#     environment:
+#       - MONGO_DATA_DIR=/data/db
+#       - MONGO_LOG_DIR=/dev/null
+#     ports:
+#       - 27017:27017
+#     command:
+#       - mongod
