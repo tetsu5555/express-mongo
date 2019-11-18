@@ -9,6 +9,7 @@ services:
       - MONGO_DATABASE=mongodb://mongodb/myapp
     volumes:
       - ./api:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - 8080:8080
     tty: true
