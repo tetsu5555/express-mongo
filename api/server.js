@@ -12,8 +12,8 @@ mongoose.connect(databaseUrl, { useNewUrlParser: true });
 app.get('/todos', function(req, res) {
   Todo.find().exec((err, todos) => {
     if (err) {
-        res.send(err)
-        return
+      res.send(err)
+      return
     }
     res.json(todos)
   })
