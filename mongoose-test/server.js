@@ -11,31 +11,66 @@ db.on('error', console.error.bind(console, 'connection error:'));
  
 db.once('open', function() {
     console.log("Connection Successful!");
+
+    const CampaignSchema = new mongoose.Schema(
+      {
+        name: {
+          type: String,
+          default: ''
+        },
+        type: {
+          type: String,
+          default: ''
+        }
+      }
+    )
+
+    const Campaign = mongoose.model('Campaign', CampaignSchema)
     
     // define Schema
-    var BookSchema = mongoose.Schema({
-      name: String,
-      price: Number,
-      quantity: Number
+    const CampaignFolderSchema = new mongoose.Schema(
+      {
+        name: {
+          type: String,
+          default: ''
+        },
+        campaign: [{
+          type: mongoose.Schema.Types.ObjectId
+        }]
     });
+
+    CampaignFolderSchema.add({ subFolders: [CampaignFolderSchema] })
+
+    const CampaignFolder = mongoose.model('CampaignFolder', CampaignFolderSchema)
  
-    // compile schema to model
-    var Book = mongoose.model('Book', BookSchema, 'bookstore');
  
     // documents array
-    var books = [{ name: 'Mongoose Tutorial', price: 10, quantity: 25 },
-                    { name: 'NodeJS tutorial', price: 15, quantity: 5 },
-                    { name: 'MongoDB Tutorial', price: 20, quantity: 2 }];
- 
-    // save multiple documents to the collection referenced by Book Model
-    Book.collection.insert(books, function (err, docs) {
-      if (err){ 
-          return console.error(err);
-      } else {
-        console.log("Multiple documents inserted to Collection");
-        console.log('this is docs', docs)
-      }
-    });
-    
+    const campaigns = [
+      {name: 'campaign 1', type: 'chat'},
+      {name: 'campaign 2', type: 'ticket'},
+      {name: 'campaign 3', type: 'mail'},
+    ]
+
+    Campaign.insertMany(campaigns, (err, docs) => {
+      if (err) return console.error(err)
+
+      console.log('this is campaigns', docs)
+      
+      const firstCampaignObjectId = docs[0]._id
+      const campaignFolder1 = new CampaignFolder({ name: 'folder for campaign 1', campaign: [firstCampaignObjectId] })
+
+      campaignFolder1.save(function (err, folder) {
+        if (err) return console.error(err)
+
+        console.log('this is folder', folder);
+
+        const campaignFolder2 = new CampaignFolder({ name: 'folder for campaign 2', subFolders: [folder] })
+        campaignFolder2.save(function (err, folder) {
+          if (err) return console.error(err)
+
+          console.log('this is folder2', folder);
+        })
+      })
+    })
 });
  
