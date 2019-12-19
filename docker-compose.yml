@@ -1,20 +1,36 @@
 version: '3'
 
 services:
+  # app:
+  #   container_name: node-api
+  #   build: ./api
+  #   environment:
+  #     - NODE_ENV=production
+  #     - MONGO_DATABASE=mongodb://mongodb/myapp
+  #   volumes:
+  #     - ./api:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   ports:
+  #     - 8080:8080
+  #   tty: true
+  #   links:
+  #     - mongodb
+
   app:
-    container_name: node-api
-    build: ./api
+    container_name: node-mongoose-test
+    build: ./mongoose-test
     environment:
       - NODE_ENV=production
       - MONGO_DATABASE=mongodb://mongodb/myapp
     volumes:
-      - ./api:/usr/src/app
+      - ./mongoose-test:/usr/src/app
       - /usr/src/app/node_modules
     ports:
       - 8080:8080
     tty: true
     links:
       - mongodb
+
 
   mongodb:
     image: mongo:latest
