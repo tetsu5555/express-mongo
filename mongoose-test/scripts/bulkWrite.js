@@ -1,12 +1,12 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
-var databaseUrl = process.env.MONGO_DATABASE
+const databaseUrl = process.env.MONGO_DATABASE
 
 // make a connection
 mongoose.connect(databaseUrl, { useNewUrlParser: true,  useFindAndModify: false, useUnifiedTopology: true });
  
 // get reference to database
-var db = mongoose.connection;
+const db = mongoose.connection;
 
 const thingSchema = new Schema(
   {
