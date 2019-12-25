@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var databaseUrl = process.env.MONGO_DATABASE || "mongodb://localhost/tutorialkart"
+var databaseUrl = process.env.MONGO_DATABASE
 
 // make a connection
 mongoose.connect(databaseUrl, { useNewUrlParser: true });
@@ -22,6 +22,11 @@ db.once('open', function() {
           type: String,
           default: ''
         }
+      },
+      {
+        timestamps: {
+          createdAt: 'created_at'
+        }
       }
     )
 
@@ -37,7 +42,13 @@ db.once('open', function() {
         campaign: [{
           type: mongoose.Schema.Types.ObjectId
         }]
-    });
+      },
+      {
+        timestamps: {
+          createdAt: 'created_at'
+        }
+      }
+    );
 
     CampaignFolderSchema.add({ subFolders: [CampaignFolderSchema] })
 
