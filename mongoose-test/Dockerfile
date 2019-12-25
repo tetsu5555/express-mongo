@@ -12,4 +12,6 @@ RUN npm install
 COPY . .
 
 EXPOSE 8080
-CMD [ "npm", "run", "start" ]
+
+# execでコンテナに入って実行するためにコメントアウト
+# CMD [ "npm", "run", "start" ]

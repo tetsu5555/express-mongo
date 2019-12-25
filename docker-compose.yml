@@ -31,7 +31,6 @@ services:
     links:
       - mongodb
 
-
   mongodb:
     image: mongo:latest
     environment:
@@ -41,3 +40,14 @@ services:
       - 27017:27017
     command:
       - mongod
+
+  # どうやって別のポートで立ち上げるんだ
+  # mongodb2:
+  #   image: mongo:latest
+  #   environment:
+  #     - MONGO_DATA_DIR=/data/db
+  #     - MONGO_LOG_DIR=/dev/null
+  #   ports:
+  #     - 27018:27018
+  #   command:
+  #     - mongod --port 27018
