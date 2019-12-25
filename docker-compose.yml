@@ -22,6 +22,7 @@ services:
     environment:
       - NODE_ENV=production
       - MONGO_DATABASE=mongodb://mongodb/myapp
+      - MONGO_DATABASE2=mongodb://mongodb2/myapp
     volumes:
       - ./mongoose-test:/usr/src/app
       - /usr/src/app/node_modules
@@ -30,24 +31,28 @@ services:
     tty: true
     links:
       - mongodb
+      - mongodb2
 
+  # ローカルホストの27017 portと繋ぐ
   mongodb:
     image: mongo:latest
     environment:
       - MONGO_DATA_DIR=/data/db
       - MONGO_LOG_DIR=/dev/null
+    # すでにportを使っている場合はホストマシン側のportを変更する
     ports:
       - 27017:27017
     command:
       - mongod
 
-  # どうやって別のポートで立ち上げるんだ
-  # mongodb2:
-  #   image: mongo:latest
-  #   environment:
-  #     - MONGO_DATA_DIR=/data/db
-  #     - MONGO_LOG_DIR=/dev/null
-  #   ports:
-  #     - 27018:27018
-  #   command:
-  #     - mongod --port 27018
+  # ローカルホストの27018 portと繋ぐ
+  mongodb2:
+    image: mongo:latest
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    # すでにportを使っている場合はホストマシン側のportを変更する
+    ports:
+      - 27018:27017
+    command:
+      - mongod
