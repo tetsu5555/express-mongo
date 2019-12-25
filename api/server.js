@@ -1,8 +1,8 @@
-var express = require('express');
-var app = express();
-var mongoose = require('mongoose');
-var databaseUrl = process.env.MONGO_DATABASE || "mongodb://localhost/myapp"
-var Todo = require('./models').Todo;
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
+const databaseUrl = process.env.MONGO_DATABASE || "mongodb://localhost/myapp"
+const Todo = require('./models').Todo;
 
 // reqest bodyをパースする
 app.use(express.json())
