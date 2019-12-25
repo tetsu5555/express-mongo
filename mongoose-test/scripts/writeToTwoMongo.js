@@ -1,13 +1,15 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
-var databaseUrl = process.env.MONGO_DATABASE
-var databaseUrl2 = process.env.MONGO_DATABASE2
+const databaseUrl = process.env.MONGO_DATABASE
+const databaseUrl2 = process.env.MONGO_DATABASE2
+
+
 
 // make a connection
 mongoose.connect(databaseUrl, { useNewUrlParser: true,  useFindAndModify: false, useUnifiedTopology: true });
  
 // get reference to database
-var db = mongoose.connection;
+const db = mongoose.connection;
 
 const thingSchema = new Schema(
   {
@@ -23,6 +25,26 @@ const thingSchema = new Schema(
 );
 
 const Thing = mongoose.model('Thing', thingSchema);
+
+const CampaignSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      default: ''
+    },
+    type: {
+      type: String,
+      default: ''
+    }
+  },
+  {
+    timestamps: {
+      createdAt: 'created_at'
+    }
+  }
+)
+
+const Campaign = mongoose.model('Campaign', CampaignSchema)
  
 
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -57,56 +79,12 @@ db.once('open', async function() {
 
   //  mongodb2に繋ぐ
    mongoose.connect(databaseUrl2, { useNewUrlParser: true });
-   var db = mongoose.connection;
+   const db = mongoose.connection;
     
    db.on('error', console.error.bind(console, 'connection error:'));
     
    db.once('open', function() {
-       console.log("Connection Successful!");
-   
-       const CampaignSchema = new mongoose.Schema(
-         {
-           name: {
-             type: String,
-             default: ''
-           },
-           type: {
-             type: String,
-             default: ''
-           }
-         },
-         {
-           timestamps: {
-             createdAt: 'created_at'
-           }
-         }
-       )
-   
-       const Campaign = mongoose.model('Campaign', CampaignSchema)
-       
-       // define Schema
-       const CampaignFolderSchema = new mongoose.Schema(
-         {
-           name: {
-             type: String,
-             default: ''
-           },
-           campaign: [{
-             type: mongoose.Schema.Types.ObjectId
-           }]
-         },
-         {
-           timestamps: {
-             createdAt: 'created_at'
-           }
-         }
-       );
-   
-       CampaignFolderSchema.add({ subFolders: [CampaignFolderSchema] })
-   
-       const CampaignFolder = mongoose.model('CampaignFolder', CampaignFolderSchema)
-    
-    
+       console.log("Connection Successful!"); 
        // documents array
        const campaigns = [
          {name: 'campaign 1', type: 'chat'},
@@ -115,25 +93,8 @@ db.once('open', async function() {
        ]
    
        Campaign.insertMany(campaigns, (err, docs) => {
-         if (err) return console.error(err)
-   
-         console.log('this is campaigns', docs)
-         
-         const firstCampaignObjectId = docs[0]._id
-         const campaignFolder1 = new CampaignFolder({ name: 'folder for campaign 1', campaign: [firstCampaignObjectId] })
-   
-         campaignFolder1.save(function (err, folder) {
-           if (err) return console.error(err)
-   
-           console.log('this is folder', folder);
-   
-           const campaignFolder2 = new CampaignFolder({ name: 'folder for campaign 2', subFolders: [folder] })
-           campaignFolder2.save(function (err, folder) {
-             if (err) return console.error(err)
-   
-             console.log('this is folder2', folder);
-           })
-         })
+        if (err) return console.error(err)
+        console.log('this is campaigns', docs)
        })
    });
   })
