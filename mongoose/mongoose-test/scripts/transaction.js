@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 mongoose.Promise = global.Promise
 // mongoose.set('debug', true) // enable logging collection methods + arguments to the console
 const databaseUrl = process.env.MONGO_DATABASE
-mongoose.connect(databaseUrl)
+mongoose.connect('mongodb://mongodb,mongodb2',  { useNewUrlParser: true, replicaSet: "rs0", useUnifiedTopology: true })
 
 
 const schema1 = new Schema({
@@ -51,20 +51,15 @@ const insert = async function(isFail = false) {
 
 
   try {
-    console.log('aaaa')
     await session.startTransaction()
-    console.log('aaaaaaaaa')
 
     // テーブルがないと失敗するので注意
-    console.log('aaaaaaaaa isFail before', isFail)
     await User.insertMany([{name: '次郎'}],  { session })
     await Chat.insertMany([{msg: 'こんにちわ'}],  { session })
-    console.log('aaaaaaaaa isFail', isFail)
     if (isFail) {
       throw new Error('保存失敗')
     }
 
-    console.log('aaaaaaaaa beforeCommit')
     await session.commitTransaction() // コミット
     console.log('--------commit-----------')
   } catch (e) {
