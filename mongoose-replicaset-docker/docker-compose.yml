@@ -3,19 +3,18 @@ services:
   mongodb-primary:
     image: mongo:4.2.0-bionic
     container_name: mongodb-primary
-    hostname: mognodb-primary
+    hostname: mongodb-primary
     command: >
       mongod
       --port 27017
       --replSet replset
-      --auth --keyFile /etc/mongod-keyFfle
-    environments:
-      MONGO_INITDB_ROOT_USERNAME: roo
+      --auth --keyFile /etc/mongod-keyfile
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
     volumes:
-      # :roってなんだろう？
       - ./volumes/mongodb/root:/root:ro # Initialize script
-      - ./volumes/mongodb/etc/mongod-keyfile:/etc/mognd-keyfile:ro # Permission 600
+      - ./volumes/mongodb/etc/mongod-keyfile:/etc/mongod-keyfile:ro # Permission: 600
     ports:
       - 27017:27017
     networks:
@@ -35,7 +34,7 @@ services:
       --replSet replset
       --auth --keyFile /etc/mongod-keyfile
     volumes:
-      - ./volumes/mongodb/etc/mongod-keyfile:/etc/mongod-keyfile:ro # Permission 600
+      - ./volumes/mongodb/etc/mongod-keyfile:/etc/mongod-keyfile:ro # Permission: 600
     ports:
       - 27018:27018
     networks:
@@ -52,9 +51,9 @@ services:
       mongod
       --port 27019
       --replSet replset
-      --auth --keyFile /etc/mogodb-keyfile
+      --auth --keyFile /etc/mongod-keyfile
     volumes:
-      - ./volumes/mongodb/etc/mongod-keyfile:/etc/mongod-keyfile:ro # Permission 600
+      - ./volumes/mongodb/etc/mongod-keyfile:/etc/mongod-keyfile:ro # Permission: 600
     ports:
       - 27019:27019
     networks:
@@ -65,4 +64,4 @@ networks:
   replset:
     ipam:
       config:
-        - subnet: 192.168,1.0/24
+      - subnet: 192.168.1.0/24
